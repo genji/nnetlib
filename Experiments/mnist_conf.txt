@@ -1,0 +1,12 @@
+model = NNet
+
+
+binary_model = NNet(input_size = input_size + extra_input_size, output_size = 1, activ = binary_activ, hidden_sizes = binary_hidden_sizes)
+binary_solver = Solver("logistic", binary_model, l1_regularizer = l1_regularizer, l2_regularizer = l2_regularizer)
+binary_optimizer = Optimizer(binary_solver, method = 'sag', type = "random", stepsize = 0.0, max_updates = max_updates_binary, minibatch = 50, display = max_updates_binary/10, max_data = sys.maxint)
+binary_optimizer.train(training_data, training_label_binary, sparse_data = training_extra_data)
+
+# Predict on the train set.
+binary_model.predict_batch(training_data, training_extra_data)
+training_nll = np.mean(logistic_loss(binary_model.output, training_label_binary))
+training_classif_error = np.mean(classif_loss(binary_model.output, training_label_binary))
